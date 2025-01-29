@@ -6,6 +6,7 @@ const routes = [
     path: "/",
     element: <App />,
   },
+
   {
     path: "/room/:id",
     element: <Room />,

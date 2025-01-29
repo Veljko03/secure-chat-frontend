@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function App() {
   const [link, setLink] = useState("somelink");
@@ -33,7 +34,6 @@ function App() {
         }
       })
       .catch((err) => console.log(err));
-    //if (link == "somelink") setLink(Math.random(100));
   };
 
   function copyLink() {
@@ -76,6 +76,7 @@ function App() {
 
       <br />
       <button onClick={copyLink}>copy</button>
+      <br />
     </div>
   );
 }

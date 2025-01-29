@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import io from "socket.io-client";
+import { socket } from "./socket";
 
 function Room() {
   const [roomName, setRoomName] = useState("");
   const { id } = useParams();
-  const [socket, setSocket] = useState(null);
+  const [message, setMessage] = useState("");
+  //const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  //const [fooEvents, setFooEvents] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/room/${id}`, { mode: "cors" })
@@ -18,30 +21,51 @@ function Room() {
   }, []);
 
   useEffect(() => {
-    const socketInstance = io("http://localhost:3000");
-    setSocket(socketInstance);
+    function onConnect() {
+      setIsConnected(true);
+    }
 
-    // listen for events emitted by the server
+    function onDisconnect() {
+      setIsConnected(false);
+    }
 
-    socketInstance.on("connect", () => {
-      console.log("Connected to server");
-    });
+    function onFooEvent(value) {
+      // setFooEvents((previous) => [...previous, value]);
+    }
 
-    socketInstance.on("message", (data) => {
-      console.log(`Received message: ${data}`);
-    });
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("foo", onFooEvent);
 
     return () => {
-      if (socketInstance) {
-        socketInstance.disconnect();
-      }
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("foo", onFooEvent);
     };
   }, []);
+
+  const sendMessage = (event) => {
+    event.preventDefault();
+
+    if (isConnected && message) {
+      socket.emit("chat-message", message);
+      setMessage("");
+    }
+  };
 
   if (roomName != "") {
     return (
       <div>
         <h1>Room name: {roomName}</h1>
+        <form onSubmit={sendMessage}>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            required
+            minLength={1}
+          ></textarea>
+          <button type="submit">Send message</button>
+        </form>
       </div>
     );
   } else {
