@@ -27,7 +27,7 @@ function App() {
       .then((data) => {
         if (data) {
           const URL = data.url;
-          setLink(`http://localhost:5173/${URL}`);
+          setLink(`http://localhost:5173/room/${URL}`);
         } else {
           throw new Error("Login failed: no token provided");
         }
