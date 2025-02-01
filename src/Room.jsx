@@ -9,7 +9,7 @@ function Room() {
   const [message, setMessage] = useState("");
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [user, setUser] = useState(null);
-  const [userName, setUserName] = useState(null);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     fetch(`http://localhost:3000/room/${id}`, { mode: "cors" })
@@ -19,10 +19,10 @@ function Room() {
         setRoomName(res.room_name);
       })
       .catch((error) => console.error(error));
-    const localUser = localStorage.getItem("user");
+    const localUser = JSON.parse(localStorage.getItem(`user_${id}`));
     if (localUser) {
       setUser(localUser);
-      setUserName(localUser);
+      // setUserName(localUser);
     }
   }, [user]);
 
@@ -37,8 +37,9 @@ function Room() {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("chat-message", (msg) => {
+    socket.on("chat-message", (msg, serverOffset) => {
       setMessages((prevMessages) => [...prevMessages, msg]);
+      socket.auth.serverOffset = serverOffset;
     });
 
     return () => {
@@ -51,23 +52,39 @@ function Room() {
   const sendMessage = (event) => {
     event.preventDefault();
     if (message.trim() === "") return;
+    console.log("user ", user);
 
     // const msgData = {
-    //     user: username, // Dodajemo ime korisnika
-    //     text: message,
-    //     timestamp: new Date().toLocaleTimeString(), // Dodajemo vreme slanja
+    //   user: user,
+    //   text: message,
+    //   room: id,
+    //   timestamp: new Date().toLocaleTimeString(),
     // };
 
-    socket.emit("chat-message", message); // Šaljemo poruku serveru
-    setMessage("");
+    // socket.emit("chat-message", msgData);
+    // setMessage("");
     console.log(messages);
   };
 
   const enterUser = (event) => {
     event.preventDefault();
     if (userName.trim() === "") return;
-    localStorage.setItem("user", userName);
-    setUser(userName);
+    console.log("udje ovde");
+
+    fetch(`http://localhost:3000/room/${id}`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userName }),
+    })
+      .then((response) => response.json())
+      .then((res) => {
+        const user = { userName, userId: res.user_id };
+        localStorage.setItem(`user_${id}`, JSON.stringify(user));
+        setUser(user);
+      })
+      .catch((error) => console.error(error));
   };
   if (!user) {
     return (
@@ -89,15 +106,15 @@ function Room() {
     return (
       <div>
         <h1>Room name: {roomName}</h1>
-        <h2>Hello {user}</h2>
+        <h2>Hello {user.userName}</h2>
         <h2>Chat</h2>
         <ul style={{ listStyle: "none", padding: 0 }}>
           {messages.map((msg, index) => (
             <li
               key={index}
               style={{
-                // textAlign: msg.user === username ? "right" : "left",
-                // background: msg.user === username ? "#DCF8C6" : "#EAEAEA",
+                textAlign: msg.user === user ? "right" : "left",
+                background: msg.user === user ? "#DCF8C6" : "#EAEAEA",
                 padding: "8px",
                 margin: "4px",
                 borderRadius: "8px",
@@ -105,7 +122,7 @@ function Room() {
                 display: "inline-block",
               }}
             >
-              <strong>user</strong>: {msg}
+              <strong>{msg.user}</strong>: {msg.text}
               <br />
               <small style={{ fontSize: "10px", color: "gray" }}>
                 {msg.timestamp}
