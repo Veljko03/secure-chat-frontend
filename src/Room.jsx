@@ -24,13 +24,24 @@ function Room() {
       console.log(localUser, " local user");
 
       setUser(localUser);
-      // setUserName(localUser);
+      if (socket.connected) {
+        socket.disconnect();
+      }
+
+      socket.auth = {
+        serverOffset: 0,
+        roomId: localUser.roomId,
+      };
+      socket.connect();
     }
   }, []);
 
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
+      if (user) {
+        socket.auth.roomId = user.room_id;
+      }
     }
 
     function onDisconnect() {
@@ -86,6 +97,16 @@ function Room() {
         const user = { userName, userId: res.user_id, roomId: res.room_id };
         localStorage.setItem(`user_${id}`, JSON.stringify(user));
         setUser(user);
+        if (socket.connected) {
+          socket.disconnect();
+        }
+
+        // Ažuriraj auth sa roomId i ponovo poveži socket
+        socket.auth = {
+          serverOffset: 0,
+          roomId: user.roomId, // Postavi roomId pre povezivanja
+        };
+        socket.connect();
       })
       .catch((error) => console.error(error));
   };
