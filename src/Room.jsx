@@ -21,10 +21,12 @@ function Room() {
       .catch((error) => console.error(error));
     const localUser = JSON.parse(localStorage.getItem(`user_${id}`));
     if (localUser) {
+      console.log(localUser, " local user");
+
       setUser(localUser);
       // setUserName(localUser);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     function onConnect() {
@@ -38,6 +40,8 @@ function Room() {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("chat-message", (msg, serverOffset) => {
+      console.log(serverOffset, " server offset");
+
       setMessages((prevMessages) => [...prevMessages, msg]);
       socket.auth.serverOffset = serverOffset;
     });
@@ -54,15 +58,14 @@ function Room() {
     if (message.trim() === "") return;
     console.log("user ", user);
 
-    // const msgData = {
-    //   user: user,
-    //   text: message,
-    //   room: id,
-    //   timestamp: new Date().toLocaleTimeString(),
-    // };
+    const msgData = {
+      userId: user.userId,
+      text: message,
+      roomId: user.roomId,
+    };
 
-    // socket.emit("chat-message", msgData);
-    // setMessage("");
+    socket.emit("chat-message", msgData);
+    setMessage("");
     console.log(messages);
   };
 
@@ -80,7 +83,7 @@ function Room() {
     })
       .then((response) => response.json())
       .then((res) => {
-        const user = { userName, userId: res.user_id };
+        const user = { userName, userId: res.user_id, roomId: res.room_id };
         localStorage.setItem(`user_${id}`, JSON.stringify(user));
         setUser(user);
       })
