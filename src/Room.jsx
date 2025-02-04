@@ -52,9 +52,16 @@ function Room() {
     socket.on("disconnect", onDisconnect);
     socket.on("chat-message", (msg, serverOffset) => {
       if (messages.find((ex) => ex.id == msg.id)) return;
+      const date = new Date(msg.timestamp);
+      const formattedDate = date.toLocaleString("sr-RS", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      msg.timestamp = formattedDate;
+
       setMessages((prevMessages) => [...prevMessages, msg]);
       socket.auth.serverOffset = serverOffset;
-      console.log(msg, " server offset");
     });
 
     return () => {
@@ -67,7 +74,6 @@ function Room() {
   const sendMessage = (event) => {
     event.preventDefault();
     if (message.trim() === "") return;
-    console.log("user ", user);
 
     const msgData = {
       userId: user.userId,
@@ -77,7 +83,6 @@ function Room() {
 
     socket.emit("chat-message", msgData);
     setMessage("");
-    console.log(messages);
   };
 
   const enterUser = (event) => {
@@ -131,8 +136,8 @@ function Room() {
       <div>
         <h1>Room name: {roomName}</h1>
         <h2>Hello {user.userName}</h2>
-        {console.log("messages, ", messages)}
         <h2>Chat</h2>
+
         <ul style={{ listStyle: "none", padding: 0 }}>
           {messages.map((msg, index) => (
             <li
