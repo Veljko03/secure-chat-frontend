@@ -51,10 +51,10 @@ function Room() {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("chat-message", (msg, serverOffset) => {
-      console.log(serverOffset, " server offset");
-
+      if (messages.find((ex) => ex.id == msg.id)) return;
       setMessages((prevMessages) => [...prevMessages, msg]);
       socket.auth.serverOffset = serverOffset;
+      console.log(msg, " server offset");
     });
 
     return () => {
@@ -131,14 +131,16 @@ function Room() {
       <div>
         <h1>Room name: {roomName}</h1>
         <h2>Hello {user.userName}</h2>
+        {console.log("messages, ", messages)}
         <h2>Chat</h2>
         <ul style={{ listStyle: "none", padding: 0 }}>
           {messages.map((msg, index) => (
             <li
               key={index}
               style={{
-                textAlign: msg.user === user ? "right" : "left",
-                background: msg.user === user ? "#DCF8C6" : "#EAEAEA",
+                textAlign: msg.username === user.userName ? "right" : "left",
+                background:
+                  msg.username === user.userName ? "#DCF8C6" : "#EAEAEA",
                 padding: "8px",
                 margin: "4px",
                 borderRadius: "8px",
@@ -146,7 +148,7 @@ function Room() {
                 display: "inline-block",
               }}
             >
-              <strong>{msg.user}</strong>: {msg.text}
+              <strong>{msg.username}</strong>: {msg.content}
               <br />
               <small style={{ fontSize: "10px", color: "gray" }}>
                 {msg.timestamp}
