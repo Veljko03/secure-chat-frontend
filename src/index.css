@@ -157,5 +157,114 @@ h3 {
   width: 144px;
 }
 .errorPage {
+  background-color: #141414;
+  min-height: 100vh;
+  display: flex;
   color: red;
+  font-size: 32px;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.chatContainer {
+  background-color: #141414;
+  min-height: 100vh;
+  display: flex;
+  color: white;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+
+  gap: 40px;
+}
+
+.topSection {
+  display: flex;
+  margin: 40px;
+}
+.roomUserName {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.roomUserName h1 {
+  font-size: 44px;
+}
+.roomUserName h2 {
+  color: white;
+}
+.roomUserName strong {
+  color: #46deec;
+}
+
+.timerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #2a2e30;
+  border-radius: 12px;
+  margin-left: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.timer {
+  font-size: 48px;
+  font-weight: bold;
+  color: #46deec;
+  margin-bottom: 10px;
+}
+
+.timerMessage {
+  font-size: 18px;
+  color: #dcdcdc;
+  font-style: italic;
+  text-align: center;
+}
+
+.messagesContainer {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  height: 600px;
+  align-self: center;
+  background-color: #2a2e30;
+  border-radius: 12px;
+  box-shadow: 4px 4px 8px black;
+}
+
+.sendMessage {
+  margin-top: auto;
+  margin-bottom: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.messageForm {
+  display: flex;
+  gap: 8px;
+}
+
+.messageInput {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.sendButton {
+  padding: 8px 16px;
+  border: none;
+  background-color: #46deec;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sendButton:hover {
+  background-color: #3bc1d6;
 }

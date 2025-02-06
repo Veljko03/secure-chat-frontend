@@ -36,11 +36,13 @@ function TimeLeft({ room }) {
   }, [room]);
 
   return (
-    <div>
-      <h1>
-        {timeLeft.days} d {timeLeft.hours} h {timeLeft.minutes}min{" "}
+    <div className="timerSection">
+      <h1 className="timer">
+        {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}min
       </h1>
-      <h3>Room will be destroyed after this time expites</h3>
+      <h3 className="timerMessage">
+        Room will be destroyed after this time expires
+      </h3>
     </div>
   );
 }

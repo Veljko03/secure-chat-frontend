@@ -143,43 +143,61 @@ function Room() {
     );
   } else if (user && roomName != "") {
     return (
-      <div>
-        <h1>Room name: {roomName}</h1>
-        <h2>Hello {user.userName}</h2>
-        <h2>Chat</h2>
-        <TimeLeft room={room} />
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {messages.map((msg, index) => (
-            <li
-              key={index}
-              style={{
-                textAlign: msg.username === user.userName ? "right" : "left",
-                background:
-                  msg.username === user.userName ? "#DCF8C6" : "#EAEAEA",
-                padding: "8px",
-                margin: "4px",
-                borderRadius: "8px",
-                maxWidth: "70%",
-                display: "inline-block",
-              }}
-            >
-              <strong>{msg.username}</strong>: {msg.content}
-              <br />
-              <small style={{ fontSize: "10px", color: "gray" }}>
-                {msg.timestamp}
-              </small>
-            </li>
-          ))}
-        </ul>
-        <form onSubmit={sendMessage}>
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-            minLength={1}
-          ></textarea>
-          <button type="submit">Send message</button>
-        </form>
+      <div className="chatContainer">
+        <div className="topSection">
+          <div className="roomUserName">
+            <h1>
+              Room: <strong>{roomName}</strong>
+            </h1>
+            <h2>
+              Hello <strong>{user.userName}</strong> you can chat safly here :)
+            </h2>
+          </div>
+          <TimeLeft room={room} />
+        </div>
+        <div className="messagesContainer">
+          <div className="messages">
+            <ul style={{ listStyle: "none", padding: 0 }}>
+              {messages.map((msg, index) => (
+                <li
+                  key={index}
+                  style={{
+                    textAlign:
+                      msg.username === user.userName ? "right" : "left",
+                    background:
+                      msg.username === user.userName ? "#DCF8C6" : "#EAEAEA",
+                    padding: "8px",
+                    margin: "4px",
+                    borderRadius: "8px",
+                    maxWidth: "70%",
+                    display: "inline-block",
+                  }}
+                >
+                  <strong>{msg.username}</strong>: {msg.content}
+                  <br />
+                  <small style={{ fontSize: "10px", color: "gray" }}>
+                    {msg.timestamp}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="sendMessage">
+            <form className="messageForm" onSubmit={sendMessage}>
+              <textarea
+                className="messageInput"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+                placeholder="Type your message..."
+                minLength={1}
+              ></textarea>
+              <button className="sendButton" type="submit">
+                Send message
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     );
   } else {
