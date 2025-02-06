@@ -127,7 +127,7 @@ function Room() {
   };
   if (!user) {
     return (
-      <div>
+      <div className="enterRoomCon">
         <h1>Enter user name:</h1>
         <form onSubmit={enterUser}>
           <input
@@ -184,7 +184,7 @@ function Room() {
     );
   } else {
     return (
-      <div>
+      <div className="errorPage">
         <h1>This room does not exist or time expired</h1>
       </div>
     );

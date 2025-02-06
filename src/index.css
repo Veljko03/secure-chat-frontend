@@ -11,7 +11,7 @@
   font-family: "Segoe UI", Tahoma, sans-serif;
 }
 .secondCon {
-  margin-top: 80px;
+  margin-top: 180px;
   display: flex;
   align-items: center;
 }
@@ -115,4 +115,47 @@ li strong {
 }
 h3 {
   color: white;
+}
+.enterRoomCon {
+  background-color: #141414;
+  min-height: 100vh;
+  display: flex;
+  color: #3877bd;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+.enterRoomCon form {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  gap: 20px;
+}
+.enterRoomCon input {
+  background-color: #3c3c3c;
+  height: 24px;
+  border-radius: 8px;
+  border-width: 0;
+  color: white;
+  width: 180px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+.enterRoomCon button {
+  background-color: white;
+  height: 28px;
+  border-radius: 8px;
+  border-width: 0;
+  color: #3877bd;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 16px;
+
+  width: 144px;
+}
+.errorPage {
+  color: red;
 }
