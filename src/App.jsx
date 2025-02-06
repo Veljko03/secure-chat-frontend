@@ -27,7 +27,7 @@ function App() {
       .then((data) => {
         if (data) {
           const URL = data.url;
-          setLink(`http://localhost:5173/room/${URL}`);
+          setLink(`https://secure-chat-app-03.netlify.app/room/${URL}`);
         } else {
           throw new Error("Login failed: no token provided");
         }
