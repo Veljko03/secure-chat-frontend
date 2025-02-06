@@ -27,7 +27,7 @@ function Room() {
       console.log(localUser, " local user");
 
       setUser(localUser);
-      if (isConnected) {
+      if (socket.connected) {
         socket.disconnect();
       }
 
@@ -40,20 +40,25 @@ function Room() {
   }, []);
 
   useEffect(() => {
+    console.log(socket.auth.roomId, " socke room id");
+
     function onConnect() {
       setIsConnected(true);
-      if (user) {
-        socket.auth.roomId = user.room_id;
-      }
+      // if (user) {
+      //   socket.auth.roomId = user.room_id;
+      // }
     }
 
     function onDisconnect() {
       setIsConnected(false);
     }
+    console.log("da li udje ovde uopste");
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("chat-message", (msg, serverOffset) => {
+      console.log("chat message ", msg);
+
       if (messages.find((ex) => ex.id == msg.id)) return;
       const date = new Date(msg.timestamp);
       const formattedDate = date.toLocaleString("sr-RS", {
@@ -112,7 +117,6 @@ function Room() {
           socket.disconnect();
         }
 
-        // Ažuriraj auth sa roomId i ponovo poveži socket
         socket.auth = {
           serverOffset: 0,
           roomId: user.roomId, // Postavi roomId pre povezivanja
