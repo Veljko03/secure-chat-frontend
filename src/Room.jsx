@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "./socket";
 import TimeLeft from "./TimeLeft";
@@ -12,20 +12,22 @@ function Room() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [user, setUser] = useState(null);
   const [userName, setUserName] = useState("");
+  const listRef = useRef(null);
+  useEffect(() => {
+    //3️⃣ bring the last item into view
+    listRef.current?.lastElementChild?.scrollIntoView();
+  }, [messages]);
 
   useEffect(() => {
     fetch(`http://localhost:3000/room/${id}`, { mode: "cors" })
       .then((response) => response.json())
       .then((res) => {
-        console.log(res);
         setRoomName(res.room_name);
         setRoom(res);
       })
       .catch((error) => console.error(error));
     const localUser = JSON.parse(localStorage.getItem(`user_${id}`));
     if (localUser) {
-      console.log(localUser, " local user");
-
       setUser(localUser);
       if (socket.connected) {
         socket.disconnect();
@@ -40,8 +42,6 @@ function Room() {
   }, []);
 
   useEffect(() => {
-    console.log(socket.auth.roomId, " socke room id");
-
     function onConnect() {
       setIsConnected(true);
       // if (user) {
@@ -52,13 +52,10 @@ function Room() {
     function onDisconnect() {
       setIsConnected(false);
     }
-    console.log("da li udje ovde uopste");
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("chat-message", (msg, serverOffset) => {
-      console.log("chat message ", msg);
-
       if (messages.find((ex) => ex.id == msg.id)) return;
       const date = new Date(msg.timestamp);
       const formattedDate = date.toLocaleString("sr-RS", {
@@ -99,7 +96,6 @@ function Room() {
   const enterUser = (event) => {
     event.preventDefault();
     if (userName.trim() === "") return;
-    console.log("udje ovde");
 
     fetch(`http://localhost:3000/room/${id}`, {
       method: "post",
@@ -157,31 +153,24 @@ function Room() {
         </div>
         <div className="messagesContainer">
           <div className="messages">
-            <ul style={{ listStyle: "none", padding: 0 }}>
+            <ul className="messageList" ref={listRef}>
               {messages.map((msg, index) => (
                 <li
                   key={index}
-                  style={{
-                    textAlign:
-                      msg.username === user.userName ? "right" : "left",
-                    background:
-                      msg.username === user.userName ? "#DCF8C6" : "#EAEAEA",
-                    padding: "8px",
-                    margin: "4px",
-                    borderRadius: "8px",
-                    maxWidth: "70%",
-                    display: "inline-block",
-                  }}
+                  className={
+                    msg.username === user.userName
+                      ? "message sent"
+                      : "message received"
+                  }
                 >
-                  <strong>{msg.username}</strong>: {msg.content}
-                  <br />
-                  <small style={{ fontSize: "10px", color: "gray" }}>
-                    {msg.timestamp}
-                  </small>
+                  <span className="username">{msg.username}</span>
+                  <p className="messageContent">{msg.content}</p>
+                  <small className="timestamp">{msg.timestamp}</small>
                 </li>
               ))}
             </ul>
           </div>
+
           <div className="sendMessage">
             <form className="messageForm" onSubmit={sendMessage}>
               <textarea
