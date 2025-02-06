@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+}
+
+.mainPageContainer {
+  /* background-color: #232627; */
+  background-color: #141414;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+.secondCon {
+  margin-top: 80px;
+  display: flex;
+  align-items: center;
+}
+.formSection {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 40px;
+  align-items: center;
+}
+.formSection h3 {
+  color: #3877bd;
+  font-size: 24px;
+}
+.checkPoints {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #c8c8c8;
+  font-size: 20px;
+}
+li strong {
+  color: #3877bd;
+}
+.checkPoints ul {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.createRoomForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.goTo {
+  display: flex;
+  gap: 30px;
+}
+
+.goTo button {
+  color: #3877bd;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 900;
+  border-radius: 4px;
+  border-width: 0;
+}
+.link {
+  background-color: #3c3c3c;
+  height: 32px;
+  border-radius: 8px;
+  border-width: 0;
+  color: white;
+
+  font-size: 16px;
+  font-weight: 700;
+  width: 260px;
+}
+.createRoomForm input {
+  background-color: #3c3c3c;
+  height: 24px;
+  border-radius: 8px;
+  border-width: 0;
+  color: white;
+  width: 180px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+.createRoomForm button {
+  background-color: white;
+  height: 28px;
+  border-radius: 8px;
+  border-width: 0;
+  color: #3877bd;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 16px;
+
+  width: 144px;
+}
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
+}
+.title h1 {
+  color: #3877bd;
+  font-size: 48px;
+
+  font-weight: 900;
+}
+.title h3 {
+  color: #c8c8c8;
+  font-style: italic;
+  font-size: 20px;
+}
+h3 {
+  color: white;
+}

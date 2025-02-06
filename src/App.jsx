@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 function App() {
-  const [link, setLink] = useState("somelink");
+  const [link, setLink] = useState("Link will be displayed here");
   const [roomName, setRoomName] = useState("");
   const [expiresIn, setExpiresIn] = useState(0);
 
@@ -46,36 +46,70 @@ function App() {
     }
   }
   return (
-    <div>
-      <h1>heloo</h1>
-      <h3>here you can generate link</h3>
-      <form onSubmit={generateLink}>
-        <h3>Private room name:</h3>
-        <input
-          type="text"
-          placeholder="Room Name"
-          required
-          minLength={3}
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-        />
-        <br />
-        <input
-          type="number"
-          placeholder="Min before destory"
-          required
-          value={expiresIn}
-          onChange={(e) => setExpiresIn(e.target.value)}
-        />
-        <br />
-        <input type="text" required readOnly value={link} />
+    <div className="mainPageContainer">
+      <div className="title">
+        <h1>Create a private chat room in seconds!</h1>
+        <h3>
+          No hassle choose a name, set a duration, and generate a link. The
+          perfect tool for short-term, secure communication.
+        </h3>
+      </div>
+      <div className="secondCon">
+        <div className="formSection">
+          <h3>Enter the room name and duration in hours</h3>
+          <form className="createRoomForm" onSubmit={generateLink}>
+            <input
+              type="text"
+              placeholder="Room Name"
+              required
+              minLength={3}
+              value={roomName}
+              onChange={(e) => setRoomName(e.target.value)}
+            />
 
-        <button>Click to generate</button>
-      </form>
+            <input
+              type="number"
+              placeholder="Min before destory"
+              required
+              min={1}
+              max={999}
+              value={expiresIn}
+              onChange={(e) => setExpiresIn(e.target.value)}
+            />
 
-      <br />
-      <button onClick={copyLink}>copy</button>
-      <br />
+            <button>Click to generate</button>
+          </form>
+          <div className="goTo">
+            <input
+              className="link"
+              type="text"
+              required
+              readOnly
+              value={link}
+            />
+            <button className="btn-copy" onClick={copyLink}>
+              Copy
+            </button>
+          </div>
+          <p></p>
+        </div>
+        <div className="checkPoints">
+          <ul>
+            <li>
+              <strong>Guaranteed Privacy:</strong> Rooms automatically
+              self-destruct after the timer ends.
+            </li>
+            <li>
+              <strong>Fast and Easy</strong> Start chatting in just a few
+              clicks.
+            </li>
+            <li>
+              <strong>No Registration Required</strong> Focus on the
+              conversation, not on forms
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
