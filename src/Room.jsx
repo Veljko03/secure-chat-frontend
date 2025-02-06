@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "./socket";
+import TimeLeft from "./TimeLeft";
 
 function Room() {
   const [roomName, setRoomName] = useState("");
+  const [room, setRoom] = useState(null);
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -17,6 +19,7 @@ function Room() {
       .then((res) => {
         console.log(res);
         setRoomName(res.room_name);
+        setRoom(res);
       })
       .catch((error) => console.error(error));
     const localUser = JSON.parse(localStorage.getItem(`user_${id}`));
@@ -24,7 +27,7 @@ function Room() {
       console.log(localUser, " local user");
 
       setUser(localUser);
-      if (socket.connected) {
+      if (isConnected) {
         socket.disconnect();
       }
 
@@ -54,6 +57,9 @@ function Room() {
       if (messages.find((ex) => ex.id == msg.id)) return;
       const date = new Date(msg.timestamp);
       const formattedDate = date.toLocaleString("sr-RS", {
+        // year: "numeric",
+        // month: "2-digit",
+        // day: "2-digit",
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
@@ -137,7 +143,7 @@ function Room() {
         <h1>Room name: {roomName}</h1>
         <h2>Hello {user.userName}</h2>
         <h2>Chat</h2>
-
+        <TimeLeft room={room} />
         <ul style={{ listStyle: "none", padding: 0 }}>
           {messages.map((msg, index) => (
             <li
