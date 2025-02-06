@@ -11,7 +11,7 @@ function App() {
       alert("set room name");
     }
     console.log(roomName);
-    fetch(`http://localhost:3000`, {
+    fetch(`https://secure-chat-backend-production.up.railway.app/`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

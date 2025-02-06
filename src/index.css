@@ -23,7 +23,7 @@
   align-items: center;
 }
 .formSection h3 {
-  color: #3877bd;
+  color: #3bc1d6;
   font-size: 24px;
 }
 .checkPoints {
@@ -35,7 +35,7 @@
   font-size: 20px;
 }
 li strong {
-  color: #3877bd;
+  color: #3bc1d6;
 }
 .checkPoints ul {
   display: flex;
@@ -103,7 +103,7 @@ li strong {
   gap: 12px;
 }
 .title h1 {
-  color: #3877bd;
+  color: #3bc1d6;
   font-size: 48px;
 
   font-weight: 900;
@@ -120,7 +120,7 @@ h3 {
   background-color: #141414;
   min-height: 100vh;
   display: flex;
-  color: #3877bd;
+  color: #3bc1d6;
   flex-direction: column;
   font-family: "Segoe UI", Tahoma, sans-serif;
   justify-content: center;

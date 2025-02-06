@@ -13,13 +13,16 @@ function Room() {
   const [user, setUser] = useState(null);
   const [userName, setUserName] = useState("");
   const listRef = useRef(null);
+
   useEffect(() => {
     //3️⃣ bring the last item into view
     listRef.current?.lastElementChild?.scrollIntoView();
   }, [messages]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/room/${id}`, { mode: "cors" })
+    fetch(`https://secure-chat-backend-production.up.railway.app/room/${id}`, {
+      mode: "cors",
+    })
       .then((response) => response.json())
       .then((res) => {
         setRoomName(res.room_name);
@@ -97,7 +100,7 @@ function Room() {
     event.preventDefault();
     if (userName.trim() === "") return;
 
-    fetch(`http://localhost:3000/room/${id}`, {
+    fetch(`https://secure-chat-backend-production.up.railway.app/room/${id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
