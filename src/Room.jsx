@@ -14,13 +14,15 @@ function Room() {
   const [userName, setUserName] = useState("");
   const listRef = useRef(null);
 
+  const API_URL = import.meta.env.VITE_BACKEND_APP_API_URL;
+
   useEffect(() => {
     //3️⃣ bring the last item into view
     listRef.current?.lastElementChild?.scrollIntoView();
   }, [messages]);
 
   useEffect(() => {
-    fetch(`https://secure-chat-backend-production.up.railway.app/room/${id}`, {
+    fetch(`${API_URL}/room/${id}`, {
       mode: "cors",
     })
       .then((response) => response.json())
@@ -100,7 +102,7 @@ function Room() {
     event.preventDefault();
     if (userName.trim() === "") return;
 
-    fetch(`https://secure-chat-backend-production.up.railway.app/room/${id}`, {
+    fetch(`${API_URL}/room/${id}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

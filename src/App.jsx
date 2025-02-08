@@ -1,9 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [link, setLink] = useState("Link will be displayed here");
   const [roomName, setRoomName] = useState("");
   const [expiresIn, setExpiresIn] = useState(0);
+  const navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_BACKEND_APP_API_URL;
+  console.log(API_URL);
 
   const generateLink = (event) => {
     event.preventDefault();
@@ -11,7 +16,7 @@ function App() {
       alert("set room name");
     }
     console.log(roomName);
-    fetch(`https://secure-chat-backend-production.up.railway.app/`, {
+    fetch(API_URL, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +32,8 @@ function App() {
       .then((data) => {
         if (data) {
           const URL = data.url;
-          setLink(`https://secure-chat-app-03.netlify.app/room/${URL}`);
+          const currUrl = window.location.href;
+          setLink(`${currUrl}room/${URL}`);
         } else {
           throw new Error("Login failed: no token provided");
         }
@@ -35,6 +41,13 @@ function App() {
       .catch((err) => console.log(err));
   };
 
+  function redirect() {
+    if (link != "Link will be displayed here") {
+      window.location.href = link;
+    } else {
+      alert("firstly generate link");
+    }
+  }
   function copyLink() {
     if (link != "") {
       navigator.clipboard.writeText(link);
@@ -90,6 +103,7 @@ function App() {
             <button className="btn-copy" onClick={copyLink}>
               Copy
             </button>
+            <button onClick={redirect}>Enter room</button>
           </div>
           <p></p>
         </div>
