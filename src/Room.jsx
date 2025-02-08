@@ -98,6 +98,15 @@ function Room() {
     setMessage("");
   };
 
+  function copyLink() {
+    const url = window.location.href;
+
+    navigator.clipboard.writeText(url);
+
+    // Alert the copied text
+    alert("Copied the link: " + url);
+  }
+
   const enterUser = (event) => {
     event.preventDefault();
     if (userName.trim() === "") return;
@@ -153,6 +162,9 @@ function Room() {
             <h2>
               Hello <strong>{user.userName}</strong> you can chat safly here :)
             </h2>
+            <button onClick={copyLink} className="copyRoom">
+              Copy Room Link
+            </button>
           </div>
           <TimeLeft room={room} />
         </div>
