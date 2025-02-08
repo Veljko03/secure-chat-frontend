@@ -5,10 +5,9 @@ function App() {
   const [link, setLink] = useState("Link will be displayed here");
   const [roomName, setRoomName] = useState("");
   const [expiresIn, setExpiresIn] = useState(0);
-  const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_BACKEND_APP_API_URL;
-  console.log(API_URL);
+  console.log(API_URL, " api url");
 
   const generateLink = (event) => {
     event.preventDefault();
@@ -18,6 +17,7 @@ function App() {
     console.log(roomName);
     fetch(API_URL, {
       method: "post",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
