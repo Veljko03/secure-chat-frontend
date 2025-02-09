@@ -13,13 +13,38 @@ function Room() {
   const [user, setUser] = useState(null);
   const [userName, setUserName] = useState("");
   const listRef = useRef(null);
+  const [encriptionKey, setEncryptionKey] = useState(null);
 
   const API_URL = import.meta.env.VITE_BACKEND_APP_API_URL;
 
   useEffect(() => {
-    //3️⃣ bring the last item into view
     listRef.current?.lastElementChild?.scrollIntoView();
   }, [messages]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const keyBase64 = params.get("key");
+    if (!keyBase64) {
+      alert("Encryption key is missing! You won't be able to read messages.");
+      return;
+    }
+
+    const keyBytes = new Uint8Array(
+      [...atob(keyBase64)].map((char) => char.charCodeAt(0))
+    );
+
+    crypto.subtle
+      .importKey("raw", keyBytes, { name: "AES-GCM" }, false, [
+        "encrypt",
+        "decrypt",
+      ])
+      .then((importedKey) => {
+        console.log(importedKey, " keyy");
+
+        setEncryptionKey(importedKey);
+      })
+      .catch((err) => console.error("Error importing key:", err));
+  }, []);
 
   useEffect(() => {
     fetch(`${API_URL}/room/${id}`, {
@@ -60,8 +85,24 @@ function Room() {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("chat-message", (msg, serverOffset) => {
+    socket.on("chat-message", async (msg, serverOffset) => {
       if (messages.find((ex) => ex.id == msg.id)) return;
+      console.log(encriptionKey, " key in socket");
+
+      if (!encriptionKey) {
+        console.error("Encryption key missing! Cannot decrypt.");
+
+        return;
+      }
+      console.log("message", msg);
+
+      const decryptedText = await decryptMessage(
+        msg.content,
+        msg.iv,
+        encriptionKey
+      );
+
+      msg.content = decryptedText;
       const date = new Date(msg.timestamp);
       const formattedDate = date.toLocaleString("sr-RS", {
         // year: "numeric",
@@ -82,15 +123,23 @@ function Room() {
       socket.off("disconnect", onDisconnect);
       socket.off("chat-message");
     };
-  }, []);
+  }, [encriptionKey]);
 
-  const sendMessage = (event) => {
+  const sendMessage = async (event) => {
     event.preventDefault();
     if (message.trim() === "") return;
+    if (!encriptionKey) {
+      alert("Encryption key missing! Cannot send message.");
+      return;
+    }
+
+    const encryptedMsg = await encryptMessage(message, encriptionKey);
+    console.log(encryptedMsg);
 
     const msgData = {
       userId: user.userId,
-      text: message,
+      text: encryptedMsg.encryptedData,
+      iv: encryptedMsg.iv,
       roomId: user.roomId,
     };
 
@@ -135,6 +184,41 @@ function Room() {
       })
       .catch((error) => console.error(error));
   };
+
+  async function encryptMessage(message, key) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(message);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+
+    const encrypted = await crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      key,
+      data
+    );
+
+    return {
+      encryptedData: btoa(String.fromCharCode(...new Uint8Array(encrypted))), // Base64
+      iv: btoa(String.fromCharCode(...iv)), // Base64 IV (mora se čuvati za dekripciju)
+    };
+  }
+  async function decryptMessage(encryptedData, iv, key) {
+    console.log(encryptedData, " data");
+    console.log(iv, " iv");
+
+    const encryptedBytes = Uint8Array.from(atob(encryptedData), (c) =>
+      c.charCodeAt(0)
+    );
+    const ivBytes = Uint8Array.from(atob(iv), (c) => c.charCodeAt(0));
+
+    const decrypted = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: ivBytes },
+      key,
+      encryptedBytes
+    );
+
+    return new TextDecoder().decode(decrypted);
+  }
+
   if (!user) {
     return (
       <div className="enterRoomCon">
