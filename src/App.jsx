@@ -9,12 +9,28 @@ function App() {
   const API_URL = import.meta.env.VITE_BACKEND_APP_API_URL;
   console.log(API_URL, " api url");
 
-  const generateLink = (event) => {
+  async function generateEncryptionKey() {
+    const key = await crypto.subtle.generateKey(
+      { name: "AES-GCM", length: 256 },
+      true,
+      ["encrypt", "decrypt"]
+    );
+    return key;
+  }
+  async function exportKey(key) {
+    const exported = await crypto.subtle.exportKey("raw", key);
+    return btoa(String.fromCharCode(...new Uint8Array(exported)));
+  }
+
+  const generateLink = async (event) => {
     event.preventDefault();
     if (roomName == "") {
       alert("set room name");
+      return;
     }
-    console.log(roomName);
+    const key = await generateEncryptionKey();
+    const keyAsString = await exportKey(key);
+
     fetch(API_URL, {
       method: "post",
       mode: "cors",
@@ -33,7 +49,7 @@ function App() {
         if (data) {
           const URL = data.url;
           const currUrl = window.location.href;
-          setLink(`${currUrl}room/${URL}`);
+          setLink(`${currUrl}room/${URL}?key=${keyAsString}`);
         } else {
           throw new Error("Login failed: no token provided");
         }
