@@ -30,6 +30,7 @@ function App() {
     }
     const key = await generateEncryptionKey();
     const keyAsString = await exportKey(key);
+    const safeKey = encodeURIComponent(keyAsString);
 
     fetch(API_URL, {
       method: "post",
@@ -49,7 +50,7 @@ function App() {
         if (data) {
           const URL = data.url;
           const currUrl = window.location.href;
-          setLink(`${currUrl}room/${URL}?key=${keyAsString}`);
+          setLink(`${currUrl}room/${URL}?key=${safeKey}`);
         } else {
           throw new Error("Login failed: no token provided");
         }

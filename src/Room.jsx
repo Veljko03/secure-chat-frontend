@@ -23,15 +23,26 @@ function Room() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+
     const keyBase64 = params.get("key");
+    console.log(keyBase64, " key");
+
     if (!keyBase64) {
       alert("Encryption key is missing! You won't be able to read messages.");
       return;
     }
+    const decodedKey = decodeURIComponent(keyBase64);
 
-    const keyBytes = new Uint8Array(
-      [...atob(keyBase64)].map((char) => char.charCodeAt(0))
-    );
+    let keyBytes;
+    try {
+      keyBytes = new Uint8Array(
+        [...atob(decodedKey)].map((char) => char.charCodeAt(0))
+      );
+    } catch (err) {
+      console.error("Base64 decoding error:", err);
+      alert("Invalid encryption key.");
+      return;
+    }
 
     crypto.subtle
       .importKey("raw", keyBytes, { name: "AES-GCM" }, false, [
@@ -44,7 +55,7 @@ function Room() {
         setEncryptionKey(importedKey);
       })
       .catch((err) => console.error("Error importing key:", err));
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     fetch(`${API_URL}/room/${id}`, {
